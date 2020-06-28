@@ -1,4 +1,4 @@
-package net.coordinate.keeper;
+package net.coordinate.keeper.commands;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.context.CommandContext;
@@ -8,7 +8,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.Formatting;
 
-final class CurrentBiomeCommand implements Command<ServerCommandSource> {
+public final class CurrentBiomeCommand implements Command<ServerCommandSource> {
 
     @Override
     public int run(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
