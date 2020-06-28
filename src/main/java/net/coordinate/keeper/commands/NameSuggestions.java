@@ -22,6 +22,9 @@ public class NameSuggestions implements SuggestionProvider<ServerCommandSource> 
         for (String name : config.getNames()) {
             builder.suggest(name);
         }
+        for (String name : config.getUserNames()) {
+            builder.suggest(name);
+        }
         return builder.buildFuture();
     }
 }

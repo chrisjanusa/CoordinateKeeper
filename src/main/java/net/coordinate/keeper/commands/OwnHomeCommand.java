@@ -5,17 +5,17 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.coordinate.keeper.data.Config;
 import net.coordinate.keeper.data.Coordinates;
-import net.coordinate.keeper.helpers.HomeHelper;
+import net.coordinate.keeper.helpers.CoordinatesHelper;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 
 
 public final class OwnHomeCommand implements Command<ServerCommandSource> {
-    public static final String homeArgument = "player";
-
+    private final String type;
     private Config config;
 
-    public OwnHomeCommand(Config config) {
+    public OwnHomeCommand(Config config, String type) {
+        this.type = type;
         this.config = config;
     }
 
@@ -24,6 +24,6 @@ public final class OwnHomeCommand implements Command<ServerCommandSource> {
         ServerPlayerEntity player = context.getSource().getPlayer();
         String playerName = player.getEntityName();
         Coordinates coordinates = config.getCoordinates(playerName);
-        return HomeHelper.displayHomeCoordinates(context, playerName, coordinates);
+        return CoordinatesHelper.displayCoordinates(context, playerName, coordinates, type);
     }
 }

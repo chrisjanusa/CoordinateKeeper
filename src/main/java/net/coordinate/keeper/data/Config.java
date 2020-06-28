@@ -2,7 +2,7 @@ package net.coordinate.keeper.data;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.google.gson.stream.JsonReader;
+import net.coordinate.keeper.helpers.CoordinatesHelper. Category;
 import net.fabricmc.loader.api.FabricLoader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -16,25 +16,6 @@ import java.util.HashMap;
  */
 public class Config {
     private static Logger LOGGER = LogManager.getLogger("[Coordinate Keeper] ");
-
-    public enum Category {
-        NETHER("nether_portals"),
-        HOME("home"),
-        SHOPPING("shops"),
-        BIOME("biomes"),
-        SPAWNER("spawners"),
-        OTHER("other");
-
-        private String fileName;
-
-        Category(String fileName) {
-            this.fileName = fileName;
-        }
-
-        public String getFileName() {
-            return fileName;
-        }
-    }
 
     private Gson gson;
     private File configFile;

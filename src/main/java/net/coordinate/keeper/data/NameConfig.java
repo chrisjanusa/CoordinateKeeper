@@ -55,6 +55,10 @@ public class NameConfig {
         return config.values();
     }
 
+    public boolean isUsernameStored(String username) {
+        return config.containsValue(username);
+    }
+
     /**
      * Load an existing config file or create an empty one
      */

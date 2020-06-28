@@ -6,6 +6,7 @@ import com.mojang.brigadier.tree.LiteralCommandNode;
 import net.coordinate.keeper.commands.*;
 import net.coordinate.keeper.data.Config;
 import net.coordinate.keeper.data.NameConfig;
+import net.coordinate.keeper.helpers.CoordinatesHelper.Category;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.minecraft.command.EntitySelector;
@@ -39,10 +40,10 @@ public class CoordinateKeeper implements ModInitializer {
                     .executes(new SetNameCommand(nameConfig))
                     .build();
 
-            Config homeConfig = new Config(Config.Category.HOME);
+            Config homeConfig = new Config(Category.HOME);
             LiteralCommandNode<ServerCommandSource> setHome = CommandManager
                     .literal("setHome")
-                    .executes(new SetHomeCommand(homeConfig))
+                    .executes(new SetHomeCommand(homeConfig, nameConfig, "home"))
                     .build();
 
             LiteralCommandNode<ServerCommandSource> home = CommandManager
@@ -50,30 +51,56 @@ public class CoordinateKeeper implements ModInitializer {
                     .build();
 
             CommandNode<ServerCommandSource> ownHome = CommandManager
-                    .literal("home")
-                    .executes(new OwnHomeCommand(homeConfig))
+                    .literal("myhome")
+                    .executes(new OwnHomeCommand(homeConfig, "home"))
                     .build();
 
-            ArgumentCommandNode<ServerCommandSource, EntitySelector> homePlayer = CommandManager
-                    .argument(HomeCommand.homeArgument, EntityArgumentType.player())
-                    .executes(new HomeCommand(homeConfig))
-                    .build();
-
-            ArgumentCommandNode<ServerCommandSource, String> homeName = CommandManager
-                    .argument(NameHomeCommand.nameArgument, word())
+            ArgumentCommandNode<ServerCommandSource, String> homePlayer = CommandManager
+                    .argument(HomeCommand.homeArgument, word())
                     .suggests(new NameSuggestions(nameConfig))
-                    .executes(new NameHomeCommand(nameConfig, homeConfig))
+                    .executes(new HomeCommand(nameConfig, homeConfig, "home"))
                     .build();
 
+            Config netherConfig = new Config(Category.NETHER);
+            LiteralCommandNode<ServerCommandSource> setNether = CommandManager
+                    .literal("setNether")
+                    .executes(new SetHomeCommand(netherConfig, nameConfig,"nether portal"))
+                    .build();
 
+            LiteralCommandNode<ServerCommandSource> nether = CommandManager
+                    .literal("nether")
+                    .build();
 
+            CommandNode<ServerCommandSource> ownNether = CommandManager
+                    .literal("mynether")
+                    .executes(new OwnHomeCommand(netherConfig, "nether portal"))
+                    .build();
+
+            ArgumentCommandNode<ServerCommandSource, String> netherPlayer = CommandManager
+                    .argument(HomeCommand.homeArgument, word())
+                    .suggests(new NameSuggestions(nameConfig))
+                    .executes(new HomeCommand(nameConfig, netherConfig, "nether portal"))
+                    .build();
+
+            // Curr Coordinates
             dispatcher.getRoot().addChild(currCoordinates);
+
+            // Curr Biome
             dispatcher.getRoot().addChild(currBiome);
+
+            // Player Homes
             dispatcher.getRoot().addChild(setHome);
             dispatcher.getRoot().addChild(ownHome);
             dispatcher.getRoot().addChild(home);
             home.addChild(homePlayer);
-            home.addChild(homeName);
+
+            // Player Nether Portals
+            dispatcher.getRoot().addChild(setNether);
+            dispatcher.getRoot().addChild(ownNether);
+            dispatcher.getRoot().addChild(nether);
+            nether.addChild(netherPlayer);
+
+            // Set Name
             dispatcher.getRoot().addChild(setName);
             setName.addChild(name);
         });
