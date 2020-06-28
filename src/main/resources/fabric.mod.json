@@ -1,16 +1,16 @@
 {
   "schemaVersion": 1,
-  "id": "modid",
+  "id": "coordinatekeeper",
   "version": "${version}",
 
-  "name": "Example Mod",
-  "description": "This is an example description! Tell everyone what your mod is about!",
+  "name": "Coordinate Keeper",
+  "description": "This fabric mod easily allows you to store coordinates for homes, shops, nether portals, and biomes for everyone to use",
   "authors": [
-    "Me!"
+    "Chris Janusa"
   ],
   "contact": {
-    "homepage": "https://fabricmc.net/",
-    "sources": "https://github.com/FabricMC/fabric-example-mod"
+    "homepage": "https://github.com/miamiheat710/CoordinateKeeper",
+    "sources": "https://github.com/miamiheat710/CoordinateKeeper"
   },
 
   "license": "CC0-1.0",
@@ -19,11 +19,10 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "net.fabricmc.example.ExampleMod"
+      "net.coordinate.keeper.CoordinateKeeper"
     ]
   },
   "mixins": [
-    "modid.mixins.json"
   ],
 
   "depends": {
