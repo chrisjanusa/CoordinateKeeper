@@ -9,6 +9,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.*;
 import java.lang.reflect.Type;
+import java.util.Collection;
 import java.util.HashMap;
 
 /**
@@ -41,16 +42,22 @@ public class Config {
         saveConfig();
     }
 
-    /**
-     * Get an {@link Integer} from the config
-     *
-     * @param key - The name of the entry
-     * @return - The return value
-     */
+    public void removeCoordinates(String key) {
+        config.remove(key);
+        saveConfig();
+    }
+
+    public boolean containsId(String key) {
+        return config.containsKey(key);
+    }
+
     public Coordinates getCoordinates(String key) {
         return config.getOrDefault(key, null);
     }
 
+    public Collection<String> getIds() {
+        return config.keySet();
+    }
     /**
      * Load an existing config file or create an empty one
      */

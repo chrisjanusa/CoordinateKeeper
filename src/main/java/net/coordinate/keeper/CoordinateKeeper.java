@@ -9,11 +9,10 @@ import net.coordinate.keeper.data.NameConfig;
 import net.coordinate.keeper.helpers.CoordinatesHelper.Category;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
-import net.minecraft.command.EntitySelector;
-import net.minecraft.command.arguments.EntityArgumentType;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 
+import static com.mojang.brigadier.arguments.IntegerArgumentType.integer;
 import static com.mojang.brigadier.arguments.StringArgumentType.word;
 
 public class CoordinateKeeper implements ModInitializer {
@@ -82,6 +81,81 @@ public class CoordinateKeeper implements ModInitializer {
                     .executes(new HomeCommand(nameConfig, netherConfig, "nether portal"))
                     .build();
 
+            Config generalConfig = new Config(Category.GENERAL);
+            LiteralCommandNode<ServerCommandSource> general = CommandManager
+                    .literal("coordinates")
+                    .build();
+
+            LiteralCommandNode<ServerCommandSource> addCoordinates = CommandManager
+                    .literal("add")
+                    .build();
+
+            ArgumentCommandNode<ServerCommandSource, String> addId = CommandManager
+                    .argument(AddCoordinatesCommand.ID_ARGUMENT, word())
+                    .executes(new AddCoordinatesCommand(generalConfig))
+                    .build();
+
+            LiteralCommandNode<ServerCommandSource> addManually = CommandManager
+                    .literal("add_manually")
+                    .build();
+
+            ArgumentCommandNode<ServerCommandSource, String> addManualId = CommandManager
+                    .argument(AddManualCoordinatesCommand.ID_ARGUMENT, word())
+                    .build();
+
+            ArgumentCommandNode<ServerCommandSource, Integer> addManualX = CommandManager
+                    .argument(AddManualCoordinatesCommand.X_ARGUMENT, integer())
+                    .build();
+
+            ArgumentCommandNode<ServerCommandSource, Integer> addManualY = CommandManager
+                    .argument(AddManualCoordinatesCommand.Y_ARGUMENT, integer())
+                    .build();
+
+            ArgumentCommandNode<ServerCommandSource, Integer> addManualZ = CommandManager
+                    .argument(AddManualCoordinatesCommand.Z_ARGUMENT, integer())
+                    .executes(new AddManualCoordinatesCommand(generalConfig))
+                    .build();
+
+            LiteralCommandNode<ServerCommandSource> removeCoordinates = CommandManager
+                    .literal("remove")
+                    .build();
+
+            ArgumentCommandNode<ServerCommandSource, String> removeId = CommandManager
+                    .argument(RemoveCoordinatesCommand.ID_ARGUMENT, word())
+                    .suggests(new IdSuggestions(generalConfig))
+                    .executes(new RemoveCoordinatesCommand(generalConfig))
+                    .build();
+
+            LiteralCommandNode<ServerCommandSource> replaceCoordinates = CommandManager
+                    .literal("replace")
+                    .build();
+
+            ArgumentCommandNode<ServerCommandSource, String> replaceId = CommandManager
+                    .argument(ReplaceCoordinatesCommand.ID_ARGUMENT, word())
+                    .suggests(new IdSuggestions(generalConfig))
+                    .executes(new ReplaceCoordinatesCommand(generalConfig))
+                    .build();
+
+            LiteralCommandNode<ServerCommandSource> renameCoordinates = CommandManager
+                    .literal("rename")
+                    .build();
+
+            ArgumentCommandNode<ServerCommandSource, String> renameOldId = CommandManager
+                    .argument(RenameCoordinatesCommand.OLD_ID_ARGUMENT, word())
+                    .suggests(new IdSuggestions(generalConfig))
+                    .build();
+
+            ArgumentCommandNode<ServerCommandSource, String> renameNewId = CommandManager
+                    .argument(RenameCoordinatesCommand.NEW_ID_ARGUMENT, word())
+                    .executes(new RenameCoordinatesCommand(generalConfig))
+                    .build();
+
+            ArgumentCommandNode<ServerCommandSource, String> readId = CommandManager
+                    .argument(ReadCoordinatesCommand.ID_ARGUMENT, word())
+                    .suggests(new IdSuggestions(generalConfig))
+                    .executes(new ReadCoordinatesCommand(generalConfig))
+                    .build();
+
             // Curr Coordinates
             dispatcher.getRoot().addChild(currCoordinates);
 
@@ -103,6 +177,36 @@ public class CoordinateKeeper implements ModInitializer {
             // Set Name
             dispatcher.getRoot().addChild(setName);
             setName.addChild(name);
+
+            // General Coordinates
+            dispatcher.getRoot().addChild(general);
+
+            // Add Coordinates
+            general.addChild(addCoordinates);
+            addCoordinates.addChild(addId);
+
+            // Add Coordinates Manually
+            general.addChild(addManually);
+            addManually.addChild(addManualId);
+            addManualId.addChild(addManualX);
+            addManualX.addChild(addManualY);
+            addManualY.addChild(addManualZ);
+
+            // Remove Coordinates
+            general.addChild(removeCoordinates);
+            removeCoordinates.addChild(removeId);
+
+            // Replace Coordinates
+            general.addChild(replaceCoordinates);
+            replaceCoordinates.addChild(replaceId);
+
+            // Rename Coordinates Id
+            general.addChild(renameCoordinates);
+            renameCoordinates.addChild(renameOldId);
+            renameOldId.addChild(renameNewId);
+
+            // Read Stored Coordinates
+            general.addChild(readId);
         });
     }
 }

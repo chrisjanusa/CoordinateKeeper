@@ -4,11 +4,9 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.coordinate.keeper.data.NameConfig;
+import net.coordinate.keeper.helpers.MessageHelper;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.MutableText;
-import net.minecraft.util.Formatting;
 
 import static com.mojang.brigadier.arguments.StringArgumentType.getString;
 
@@ -26,9 +24,7 @@ public final class SetNameCommand implements Command<ServerCommandSource> {
         ServerPlayerEntity user = context.getSource().getPlayer();
         String name = getString(context, "name");
         config.addName(user.getEntityName(), getString(context, "name"));
-        MutableText nameMessage = new LiteralText("Your name was set to " + name);
-        context.getSource().getPlayer().sendMessage(nameMessage.formatted(Formatting.GRAY).formatted(Formatting.ITALIC), false);
-
+        MessageHelper.sendSpecialInfo(context, "Your name was set to ", name);
         return 1;
     }
 }
